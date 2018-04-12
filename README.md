@@ -1,6 +1,23 @@
 # ElixirResponseSnapshot
 
-**TODO: Add description**
+ResponseSnapshot is a testing tool for Elixir that captures the output of responses
+and ensures that they do not change in between test runs. The output is saved to disk,
+meant to be checked into source control, and can be used by frontend and other tests
+to ensure proper integration between frontend and backend code.
+
+## Disclaimer
+
+This is in development. A version 1.0 will mark the public release.
+
+## TODO
+
+- [ ] Setup desired testing interface
+- [ ] Compare JSON responses deeply
+  - [ ] value change doesn't fail mode (new / missing keys will fail)
+  - [ ] exact value mode (new / missing keys, changed values will fail)
+- [ ] Compare HTML responses at face value
+- [ ] Fail tests with helpful message on failure
+- [ ] Allow re-recording of a snapshot with a switch passed to the test suite
 
 ## Installation
 
@@ -18,4 +35,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/elixir_response_snapshot](https://hexdocs.pm/elixir_response_snapshot).
-
