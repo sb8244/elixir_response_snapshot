@@ -29,10 +29,31 @@ defmodule ResponseSnapshotTest do
           %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: path)
         end)
 
-      assert err.message =~ "The following keys were added: \n"
-      assert err.message =~ "The following keys were removed: \n"
-      assert err.message =~ "The following keys were modified: b\n"
       assert FileManager.read_fixture(path) == original_fixture
+      assert err.message ==
+        """
+        Your snapshot has changed and must be re-recorded to pass the current test.
+
+        Existing Snapshot:
+
+        {
+          "b": 2,
+          "a": 1
+        }
+
+        Attempted Snapshot:
+
+        {
+          "b": "changed",
+          "a": 1
+        }
+
+        The following keys were added:#{" "}
+        The following keys were removed:#{" "}
+        The following keys were modified: b
+
+        Your fixture is located at test/fixtures/integration_existing.json
+        """
     end
   end
 end

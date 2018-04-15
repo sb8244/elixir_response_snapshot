@@ -22,7 +22,7 @@ defmodule ResponseSnapshot do
     changes = Diff.compare(data, existing_data)
     case changes == Changes.empty() do
       true -> :ok
-      false -> raise SnapshotMismatchError, path: path, changes: changes
+      false -> raise SnapshotMismatchError, path: path, changes: changes, existing_data: existing_data, new_data: data
     end
   end
 end
