@@ -34,14 +34,14 @@ defmodule ResponseSnapshotTest do
         """
         Your snapshot has changed and must be re-recorded to pass the current test.
 
-        Existing Snapshot:
+        Existing Snapshot JSON:
 
         {
           "b": 2,
           "a": 1
         }
 
-        Attempted Snapshot:
+        Attempted Snapshot JSON:
 
         {
           "b": "changed",

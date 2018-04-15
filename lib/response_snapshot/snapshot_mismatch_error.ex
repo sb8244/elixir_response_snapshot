@@ -9,11 +9,11 @@ defmodule ResponseSnapshot.SnapshotMismatchError do
     """
     Your snapshot has changed and must be re-recorded to pass the current test.
 
-    Existing Snapshot:
+    Existing Snapshot JSON:
 
     #{Poison.encode!(existing_data, pretty: true)}
 
-    Attempted Snapshot:
+    Attempted Snapshot JSON:
 
     #{Poison.encode!(new_data, pretty: true)}
 
