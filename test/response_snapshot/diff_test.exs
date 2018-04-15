@@ -16,6 +16,13 @@ defmodule ResponseSnapshot.DiffTest do
           |> Changes.removal("b")
     end
 
+    test "string keys work" do
+      assert Diff.compare(%{"a" => 1}, %{"b" => 2}) ==
+        Changes.empty()
+          |> Changes.addition("a")
+          |> Changes.removal("b")
+    end
+
     test "a modified key appears as a modification" do
       assert Diff.compare(%{a: 1}, %{a: 2}) ==
         Changes.empty()
