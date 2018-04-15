@@ -16,6 +16,7 @@ defmodule ResponseSnapshotTest do
       path = "test/fixtures/integration_existing.json"
       original_fixture = FileManager.read_fixture(path)
       %{a: 1, b: 2} |> ResponseSnapshot.store_and_compare!(path: path)
+
       assert FileManager.read_fixture(path) == original_fixture
     end
 
