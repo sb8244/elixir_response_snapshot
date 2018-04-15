@@ -109,6 +109,18 @@ defmodule ElixirResponseSnapshot.DiffTest do
     end
   end
 
+  describe "compare/2 with keyword lists" do
+    test "identical lists are equal" do
+      assert Diff.compare([a: 1], [a: 1]) == Changes.empty()
+    end
+
+    test "a different value is a modification" do
+      assert Diff.compare([a: 1], [a: 2]) ==
+        Changes.empty()
+          |> Changes.modification("a")
+    end
+  end
+
   describe "compare/2" do
     test "primitive (not map and not list) values are computed directly" do
       assert Diff.compare(1, 1) == Changes.empty()
@@ -127,7 +139,8 @@ defmodule ElixirResponseSnapshot.DiffTest do
           b: 2,
         },
         d: "only in source",
-        f: ["a", 2]
+        f: ["a", 2],
+        g: [a: 1, b: %{a: 1}]
       }
 
       b = %{
@@ -138,7 +151,8 @@ defmodule ElixirResponseSnapshot.DiffTest do
           b: 2
         },
         e: "only in target",
-        f: [1]
+        f: [1],
+        g: [a: 1, b: %{a: 2}]
       }
 
       assert Diff.compare(a, b) ==
@@ -150,6 +164,7 @@ defmodule ElixirResponseSnapshot.DiffTest do
           |> Changes.removal("e")
           |> Changes.modification("f_0")
           |> Changes.addition("f_1")
+          |> Changes.modification("g.b.a")
     end
   end
 end
