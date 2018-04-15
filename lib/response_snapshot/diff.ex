@@ -64,10 +64,11 @@ defmodule ResponseSnapshot.Diff do
 
   # Keyword lists cover both maps (converted to lists) and tuple lists
   defp compare_keyword_lists(source, target, changes = %Changes{}, path) do
+    source = atomize_keyword_list(source)
+    target = atomize_keyword_list(target)
+
     source_to_target_changes =
       Enum.reduce(source, changes, fn {key, source_value}, changes ->
-        key = to_atom(key)
-
         case Keyword.has_key?(target, key) do
           true ->
             target_value = Keyword.get(target, key)
@@ -79,8 +80,6 @@ defmodule ResponseSnapshot.Diff do
       end)
 
     Enum.reduce(target, source_to_target_changes, fn {key, _value}, changes ->
-      key = to_atom(key)
-
       case Keyword.has_key?(source, key) do
         true ->
           changes
@@ -94,6 +93,8 @@ defmodule ResponseSnapshot.Diff do
   defp build_path(path, key), do: "#{path}.#{key}"
   defp build_path("", key, _), do: "#{key}"
   defp build_path(path, key, separator), do: "#{path}#{separator}#{key}"
+
+  defp atomize_keyword_list(list), do: Enum.map(list, fn {key, value} -> {to_atom(key), value} end)
 
   defp to_atom(a) when is_atom(a), do: a
   defp to_atom(s) when is_bitstring(s), do: String.to_atom(s)

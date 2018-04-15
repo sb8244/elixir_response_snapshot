@@ -23,6 +23,10 @@ defmodule ResponseSnapshot.DiffTest do
           |> Changes.removal("b")
     end
 
+    test "string keys can be compared to atom keys" do
+      assert Diff.compare(%{"a" => 1}, %{a: 1}) == Changes.empty()
+    end
+
     test "a modified key appears as a modification" do
       assert Diff.compare(%{a: 1}, %{a: 2}) ==
         Changes.empty()
