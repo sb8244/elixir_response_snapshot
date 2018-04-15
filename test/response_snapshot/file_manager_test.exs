@@ -24,5 +24,19 @@ defmodule ResponseSnapshot.FileManagerTest do
   end
 
   describe "read_fixture/1" do
+    test "an invalid fixture raises an error" do
+      assert_raise(File.Error, fn ->
+        FileManager.read_fixture("nope")
+      end)
+    end
+
+    test "a valid fixture returns a map of the file contents" do
+      path = "test/fixtures/file_manager/write_fixture_1.json"
+      FileManager.write_fixture(path, data: %{"a" => 1})
+      file_contents = FileManager.read_fixture(path)
+      FileManager.cleanup_fixture(path)
+
+      assert Map.keys(file_contents) == ["data", "file", "recorded_at"]
+    end
   end
 end
