@@ -1,14 +1,29 @@
 defmodule ResponseSnapshot.FileManager do
+  @moduledoc """
+  Management of snapshot files. Files are JSON pretty encoded and contain the keys
+  "recorded_at", "file", and "data".
+  """
+
+  @doc """
+  Writes a snapshot fixture to disk. The folder structure for the path will be
+  created if it does not exist. The data will be encoded through Poison.
+  """
   def write_fixture(path, data: data) do
     create_folder_structure!(path)
     File.write!(path, writeable_data(data))
   end
 
+  @doc """
+  Read a fixture from disk, returning the file contents as a map.
+  """
   def read_fixture(path) do
     File.read!(path)
       |> Poison.decode!()
   end
 
+  @doc """
+  Remove the fixture from disk. The path hierarchy is not cleaned up.
+  """
   def cleanup_fixture(path) do
     File.rm!(path)
   end
