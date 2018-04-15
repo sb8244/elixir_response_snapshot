@@ -24,10 +24,14 @@ defmodule ResponseSnapshotTest do
       path = "test/fixtures/integration_existing.json"
       original_fixture = FileManager.read_fixture(path)
 
-      assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
-        %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: path)
-      end)
+      err =
+        assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+          %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: path)
+        end)
 
+      assert err.message =~ "The following keys were added: \n"
+      assert err.message =~ "The following keys were removed: \n"
+      assert err.message =~ "The following keys were modified: b\n"
       assert FileManager.read_fixture(path) == original_fixture
     end
   end
