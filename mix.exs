@@ -1,4 +1,4 @@
-defmodule ElixirResponseSnapshot.MixProject do
+defmodule ResponseSnapshot.MixProject do
   use Mix.Project
 
   def project do

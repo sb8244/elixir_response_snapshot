@@ -1,8 +1,8 @@
-defmodule ElixirResponseSnapshot.DiffTest do
+defmodule ResponseSnapshot.DiffTest do
   use ExUnit.Case, async: true
 
-  alias ElixirResponseSnapshot.Diff
-  alias ElixirResponseSnapshot.Changes
+  alias ResponseSnapshot.Diff
+  alias ResponseSnapshot.Changes
 
   describe "compare/2 with simple maps" do
     test "two empty maps are identical" do

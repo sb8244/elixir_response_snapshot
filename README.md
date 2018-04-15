@@ -1,4 +1,4 @@
-# ElixirResponseSnapshot
+# ResponseSnapshot
 
 ResponseSnapshot is a testing tool for Elixir that captures the output of responses
 and ensures that they do not change in between test runs. The output is saved to disk,

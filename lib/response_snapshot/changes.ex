@@ -1,4 +1,4 @@
-defmodule ElixirResponseSnapshot.Changes do
+defmodule ResponseSnapshot.Changes do
   @moduledoc """
   Structure for changes of a diff. An object which is completely identical will
   be equal to `Changes.empty()`. Any modifications, additions, and removals are
