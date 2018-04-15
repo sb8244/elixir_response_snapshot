@@ -6,13 +6,23 @@ defmodule ResponseSnapshot do
   to ensure proper integration between frontend and backend code.
   """
 
-  alias ResponseSnapshot.FileManager
+  alias ResponseSnapshot.{Changes, Diff, FileManager, SnapshotMismatchError}
 
   def store_and_compare!(data, path: path) do
     case FileManager.fixture_exists?(path) do
-      true -> nil
+      true ->
+        compare_existing_fixture(data, path: path)
       false ->
         FileManager.write_fixture(path, data: data)
+    end
+  end
+
+  defp compare_existing_fixture(data, path: path) do
+    %{"data" => existing_data} = FileManager.read_fixture(path)
+    changes = Diff.compare(data, existing_data)
+    case changes == Changes.empty() do
+      true -> :ok
+      false -> raise SnapshotMismatchError, path: path, changes: changes
     end
   end
 end

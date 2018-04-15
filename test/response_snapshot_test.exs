@@ -18,5 +18,16 @@ defmodule ResponseSnapshotTest do
       %{a: 1, b: 2} |> ResponseSnapshot.store_and_compare!(path: path)
       assert FileManager.read_fixture(path) == original_fixture
     end
+
+    test "an existing fixture which does not match raises an error" do
+      path = "test/fixtures/integration_existing.json"
+      original_fixture = FileManager.read_fixture(path)
+
+      assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+        %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: path)
+      end)
+
+      assert FileManager.read_fixture(path) == original_fixture
+    end
   end
 end
