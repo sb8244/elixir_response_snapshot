@@ -1,8 +1,18 @@
 defmodule ElixirResponseSnapshot.Diff do
+  @moduledoc """
+  Algorithm to compare a source and target value. The value can either be a primitive,
+  map, or a list. The intent of this module is that JSON notation values are passed in.
+  Therefore, keyword lists or other types would not be normal input.
+  """
+
   alias ElixirResponseSnapshot.Changes
 
-  def compare(testing_value, historical_value) do
-    compare(testing_value, historical_value, Changes.empty(), "")
+  @doc """
+  Compare the source to a target. A Changes struct is returned with the result of
+  the comparison.
+  """
+  def compare(source, target) do
+    compare(source, target, Changes.empty(), "")
   end
 
   # base case, identical values aren't different
