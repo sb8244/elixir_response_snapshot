@@ -28,6 +28,13 @@ defmodule ResponseSnapshot.FileManager do
     File.rm!(path)
   end
 
+  @doc """
+  Return whether a fixture exists or not
+  """
+  def fixture_exists?(path) do
+    File.exists?(path)
+  end
+
   defp create_folder_structure!(path) do
     path
       |> String.split("/")

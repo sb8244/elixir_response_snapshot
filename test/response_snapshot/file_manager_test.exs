@@ -39,4 +39,17 @@ defmodule ResponseSnapshot.FileManagerTest do
       assert Map.keys(file_contents) == ["data", "file", "recorded_at"]
     end
   end
+
+  describe "fixture_exists?/1" do
+    test "an invalid path is false" do
+      assert FileManager.fixture_exists?("nope/nope.json") == false
+    end
+
+    test "an existing path is true" do
+      path = "test/fixtures/file_manager/write_fixture_1.json"
+      FileManager.write_fixture(path, data: %{"a" => 1})
+      assert FileManager.fixture_exists?(path) == true
+      FileManager.cleanup_fixture(path)
+    end
+  end
 end
