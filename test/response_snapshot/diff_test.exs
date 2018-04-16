@@ -11,16 +11,16 @@ defmodule ResponseSnapshot.DiffTest do
 
     test "a mismatch key appears as a diff and add" do
       assert Diff.compare(%{a: 1}, %{b: 2}) ==
-        Changes.empty()
-          |> Changes.addition("a")
-          |> Changes.removal("b")
+               Changes.empty()
+               |> Changes.addition("a")
+               |> Changes.removal("b")
     end
 
     test "string keys work" do
       assert Diff.compare(%{"a" => 1}, %{"b" => 2}) ==
-        Changes.empty()
-          |> Changes.addition("a")
-          |> Changes.removal("b")
+               Changes.empty()
+               |> Changes.addition("a")
+               |> Changes.removal("b")
     end
 
     test "string keys can be compared to atom keys" do
@@ -29,17 +29,21 @@ defmodule ResponseSnapshot.DiffTest do
 
     test "a modified key appears as a modification" do
       assert Diff.compare(%{a: 1}, %{a: 2}) ==
-        Changes.empty()
-          |> Changes.modification("a")
+               Changes.empty()
+               |> Changes.modification("a")
     end
 
     test "multiple map keys are iterated" do
-      assert Diff.compare(%{a: 1, b: 2, in_source: true, another: true}, %{a: 2, b: 2, in_target: true}) ==
-        Changes.empty()
-          |> Changes.modification("a")
-          |> Changes.addition("another")
-          |> Changes.addition("in_source")
-          |> Changes.removal("in_target")
+      assert Diff.compare(%{a: 1, b: 2, in_source: true, another: true}, %{
+               a: 2,
+               b: 2,
+               in_target: true
+             }) ==
+               Changes.empty()
+               |> Changes.modification("a")
+               |> Changes.addition("another")
+               |> Changes.addition("in_source")
+               |> Changes.removal("in_target")
     end
   end
 
@@ -49,26 +53,29 @@ defmodule ResponseSnapshot.DiffTest do
     end
 
     test "two nested maps have a modification, addition, and removal" do
-      assert Diff.compare(%{a: %{b: 1, in_source: true}}, %{a: %{b: 2, in_target: true}}) == Changes.empty()
-        |> Changes.modification("a.b")
-        |> Changes.addition("a.in_source")
-        |> Changes.removal("a.in_target")
+      assert Diff.compare(%{a: %{b: 1, in_source: true}}, %{a: %{b: 2, in_target: true}}) ==
+               Changes.empty()
+               |> Changes.modification("a.b")
+               |> Changes.addition("a.in_source")
+               |> Changes.removal("a.in_target")
     end
 
     test "2 mismatch maps with an additional nesting layer have the entire set of changes enumerated" do
       assert Diff.compare(%{a: %{a: %{b: 1, in_source: true}}}, %{a: %{b: 2, in_target: true}}) ==
-        Changes.empty()
-          |> Changes.addition("a.a")
-          |> Changes.removal("a.b")
-          |> Changes.removal("a.in_target")
+               Changes.empty()
+               |> Changes.addition("a.a")
+               |> Changes.removal("a.b")
+               |> Changes.removal("a.in_target")
     end
 
     test "2 maps can be deeply nested" do
-      assert Diff.compare(%{a: %{a: %{b: 1, in_source: true}}}, %{a: %{a: %{b: 2, in_target: true}}}) ==
-        Changes.empty()
-          |> Changes.modification("a.a.b")
-          |> Changes.addition("a.a.in_source")
-          |> Changes.removal("a.a.in_target")
+      assert Diff.compare(%{a: %{a: %{b: 1, in_source: true}}}, %{
+               a: %{a: %{b: 2, in_target: true}}
+             }) ==
+               Changes.empty()
+               |> Changes.modification("a.a.b")
+               |> Changes.addition("a.a.in_source")
+               |> Changes.removal("a.a.in_target")
     end
   end
 
@@ -83,52 +90,52 @@ defmodule ResponseSnapshot.DiffTest do
 
     test "a value in source but not target is an addition" do
       assert Diff.compare([1], []) ==
-        Changes.empty()
-          |> Changes.addition("0")
+               Changes.empty()
+               |> Changes.addition("0")
     end
 
     test "a map in source but not target is an addition" do
       assert Diff.compare([%{a: 1}], []) ==
-        Changes.empty()
-          |> Changes.addition("0")
+               Changes.empty()
+               |> Changes.addition("0")
     end
 
     test "a value in target but not source is a removal" do
       assert Diff.compare([], [1]) ==
-        Changes.empty()
-          |> Changes.removal("0")
+               Changes.empty()
+               |> Changes.removal("0")
     end
 
     test "multiple values in target but not source are removals" do
       assert Diff.compare([1, 2, 3], [1, 2, 3, 4, 5]) ==
-        Changes.empty()
-          |> Changes.removal("3")
-          |> Changes.removal("4")
+               Changes.empty()
+               |> Changes.removal("3")
+               |> Changes.removal("4")
     end
 
     test "nested lists can compute their own additions" do
       assert Diff.compare([1, [2]], [1, []]) ==
-        Changes.empty()
-          |> Changes.addition("1_0")
+               Changes.empty()
+               |> Changes.addition("1_0")
     end
 
     test "different maps compute their own changes" do
       assert Diff.compare([%{a: 1}], [%{b: 2}]) ==
-        Changes.empty()
-          |> Changes.addition("0.a")
-          |> Changes.removal("0.b")
+               Changes.empty()
+               |> Changes.addition("0.a")
+               |> Changes.removal("0.b")
     end
   end
 
   describe "compare/2 with keyword lists" do
     test "identical lists are equal" do
-      assert Diff.compare([a: 1], [a: 1]) == Changes.empty()
+      assert Diff.compare([a: 1], a: 1) == Changes.empty()
     end
 
     test "a different value is a modification" do
-      assert Diff.compare([a: 1], [a: 2]) ==
-        Changes.empty()
-          |> Changes.modification("a")
+      assert Diff.compare([a: 1], a: 2) ==
+               Changes.empty()
+               |> Changes.modification("a")
     end
   end
 
@@ -147,7 +154,7 @@ defmodule ResponseSnapshot.DiffTest do
         b: [1, 2, %{additional: true}, "another"],
         c: %{
           a: 1,
-          b: 2,
+          b: 2
         },
         d: "only in source",
         f: ["a", 2],
@@ -167,15 +174,15 @@ defmodule ResponseSnapshot.DiffTest do
       }
 
       assert Diff.compare(a, b) ==
-        Changes.empty()
-          |> Changes.addition("b_2.additional")
-          |> Changes.addition("b_3")
-          |> Changes.modification("c.a")
-          |> Changes.addition("d")
-          |> Changes.removal("e")
-          |> Changes.modification("f_0")
-          |> Changes.addition("f_1")
-          |> Changes.modification("g.b.a")
+               Changes.empty()
+               |> Changes.addition("b_2.additional")
+               |> Changes.addition("b_3")
+               |> Changes.modification("c.a")
+               |> Changes.addition("d")
+               |> Changes.removal("e")
+               |> Changes.modification("f_0")
+               |> Changes.addition("f_1")
+               |> Changes.modification("g.b.a")
     end
   end
 end

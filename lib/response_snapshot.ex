@@ -73,6 +73,7 @@ defmodule ResponseSnapshot do
     case FileManager.fixture_exists?(path) do
       true ->
         compare_existing_fixture(data, path: path, mode: mode, ignored_keys: ignored_keys)
+
       false ->
         FileManager.write_fixture(path, data: data)
     end
@@ -83,12 +84,19 @@ defmodule ResponseSnapshot do
 
     changes =
       Diff.compare(data, existing_data)
-        |> adjust_changes_for_mode(mode)
-        |> adjust_changes_for_ignored_keys(ignored_keys)
+      |> adjust_changes_for_mode(mode)
+      |> adjust_changes_for_ignored_keys(ignored_keys)
 
     case changes == Changes.empty() do
-      true -> :ok
-      false -> raise SnapshotMismatchError, path: path, changes: changes, existing_data: existing_data, new_data: data
+      true ->
+        :ok
+
+      false ->
+        raise SnapshotMismatchError,
+          path: path,
+          changes: changes,
+          existing_data: existing_data,
+          new_data: data
     end
   end
 
@@ -98,17 +106,17 @@ defmodule ResponseSnapshot do
 
   defp adjust_changes_for_ignored_keys(changes, ignored_keys) when is_list(ignored_keys) do
     changes
-      |> remove_ignored_keys_from_changes(:modifications, ignored_keys)
+    |> remove_ignored_keys_from_changes(:modifications, ignored_keys)
   end
 
   defp remove_ignored_keys_from_changes(changes, field, ignored_keys) do
     modified_list =
       Map.get(changes, field)
-        |> Enum.reject(fn path ->
-          Enum.find(ignored_keys, fn ignored_key ->
-            ignored_key_matches_path?(ignored_key, path)
-          end)
+      |> Enum.reject(fn path ->
+        Enum.find(ignored_keys, fn ignored_key ->
+          ignored_key_matches_path?(ignored_key, path)
         end)
+      end)
 
     Map.put(changes, field, modified_list)
   end

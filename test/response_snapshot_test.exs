@@ -39,34 +39,38 @@ defmodule ResponseSnapshotTest do
         end)
 
       assert FileManager.read_fixture(path) == original_fixture
+
       assert err.message ==
-        """
-        Your snapshot has changed and must be re-recorded to pass the current test.
+               """
+               Your snapshot has changed and must be re-recorded to pass the current test.
 
-        Existing Snapshot JSON:
+               Existing Snapshot JSON:
 
-        {
-          "b": 2,
-          "a": 1
-        }
+               {
+                 "b": 2,
+                 "a": 1
+               }
 
-        Attempted Snapshot JSON:
+               Attempted Snapshot JSON:
 
-        {
-          "b": "changed",
-          "a": 1
-        }
+               {
+                 "b": "changed",
+                 "a": 1
+               }
 
-        The following keys were added:#{" "}
-        The following keys were removed:#{" "}
-        The following keys were modified: b
+               The following keys were added:#{" "}
+               The following keys were removed:#{" "}
+               The following keys were modified: b
 
-        Your fixture is located at #{Path.expand("test/fixtures/integration_existing.json", ".")}
-        """
+               Your fixture is located at #{
+                 Path.expand("test/fixtures/integration_existing.json", ".")
+               }
+               """
     end
 
     test "mode=keys cause a modification to not error" do
-      %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, mode: :keys)
+      %{a: 1, b: "changed"}
+      |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, mode: :keys)
     end
 
     test "mode=keys can be set via Application env" do
@@ -78,7 +82,8 @@ defmodule ResponseSnapshotTest do
     test "mode=keys cause an addition to error" do
       err =
         assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
-          %{a: 1, b: 2, c: 3} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path)
+          %{a: 1, b: 2, c: 3}
+          |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path)
         end)
 
       assert err.message =~ "were added: c"
@@ -96,7 +101,11 @@ defmodule ResponseSnapshotTest do
     test "ignored_keys cause any modification to not be counted, but additions and removals still are" do
       err =
         assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
-          %{b: "changed", c: "added"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["a", "b", "c"])
+          %{b: "changed", c: "added"}
+          |> ResponseSnapshot.store_and_compare!(
+            path: @existing_snapshot_path,
+            ignored_keys: ["a", "b", "c"]
+          )
         end)
 
       assert err.message =~ "were added: c\n"
@@ -106,7 +115,10 @@ defmodule ResponseSnapshotTest do
 
     test "ignored keys are based off the Application env" do
       Application.put_env(:response_snapshot, :ignored_keys, ["a"])
-      %{a: "changed", b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["b"])
+
+      %{a: "changed", b: "changed"}
+      |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["b"])
+
       Application.delete_env(:response_snapshot, :ignored_keys)
     end
 
@@ -114,7 +126,10 @@ defmodule ResponseSnapshotTest do
       err =
         assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
           %{b: "changed", c: "added", d: "oops"}
-            |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["a", "b", "c"])
+          |> ResponseSnapshot.store_and_compare!(
+            path: @existing_snapshot_path,
+            ignored_keys: ["a", "b", "c"]
+          )
         end)
 
       assert err.message =~ "were added: d"
@@ -129,7 +144,11 @@ defmodule ResponseSnapshotTest do
               b: [1, 2]
             },
             list: [1, %{a: 1}]
-          } |> ResponseSnapshot.store_and_compare!(path: @complex_snapshot_path, ignored_keys: ["map"])
+          }
+          |> ResponseSnapshot.store_and_compare!(
+            path: @complex_snapshot_path,
+            ignored_keys: ["map"]
+          )
         end)
 
       assert err.message =~ "were modified: map.a"
@@ -142,7 +161,11 @@ defmodule ResponseSnapshotTest do
           b: [1, 2]
         },
         list: [1, %{a: 1}]
-      } |> ResponseSnapshot.store_and_compare!(path: @complex_snapshot_path, ignored_keys: [{"a", :any_nesting}])
+      }
+      |> ResponseSnapshot.store_and_compare!(
+        path: @complex_snapshot_path,
+        ignored_keys: [{"a", :any_nesting}]
+      )
     end
   end
 end

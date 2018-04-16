@@ -14,8 +14,11 @@ defmodule ResponseSnapshot.FileManagerTest do
         "file" => file,
         "recorded_at" => recorded_at
       } = file_contents
+
       {:ok, recorded_at, 0} = DateTime.from_iso8601(recorded_at)
-      difference_in_recorded_seconds = DateTime.to_unix(recorded_at) - DateTime.to_unix(DateTime.utc_now())
+
+      difference_in_recorded_seconds =
+        DateTime.to_unix(recorded_at) - DateTime.to_unix(DateTime.utc_now())
 
       assert data == %{"a" => 1}
       assert file == "test/response_snapshot/file_manager_test.exs"

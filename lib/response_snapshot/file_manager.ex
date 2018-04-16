@@ -15,7 +15,7 @@ defmodule ResponseSnapshot.FileManager do
   """
   def read_fixture(path) do
     File.read!(path)
-      |> Poison.decode!()
+    |> Poison.decode!()
   end
 
   @doc """
@@ -34,10 +34,10 @@ defmodule ResponseSnapshot.FileManager do
 
   defp create_folder_structure!(path) do
     path
-      |> String.split("/")
-      |> Enum.drop(-1)
-      |> Enum.join("/")
-      |> File.mkdir_p!
+    |> String.split("/")
+    |> Enum.drop(-1)
+    |> Enum.join("/")
+    |> File.mkdir_p!()
   end
 
   defp writeable_data(data) do
@@ -46,17 +46,17 @@ defmodule ResponseSnapshot.FileManager do
       file: first_test_file_in_stacktrace(),
       data: data
     }
-      |> Poison.encode!(pretty: true)
+    |> Poison.encode!(pretty: true)
   end
 
   defp first_test_file_in_stacktrace() do
     Process.info(self(), :current_stacktrace)
-      |> elem(1)
-      |> Enum.map(fn {_mod, _fn, _, opts} ->
-        Keyword.get(opts, :file) |> to_string()
-      end)
-      |> Enum.find(fn file ->
-        String.contains?(file, "test/")
-      end)
+    |> elem(1)
+    |> Enum.map(fn {_mod, _fn, _, opts} ->
+      Keyword.get(opts, :file) |> to_string()
+    end)
+    |> Enum.find(fn file ->
+      String.contains?(file, "test/")
+    end)
   end
 end

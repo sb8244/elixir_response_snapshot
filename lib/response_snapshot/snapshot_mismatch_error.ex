@@ -2,7 +2,10 @@ defmodule ResponseSnapshot.SnapshotMismatchError do
   defexception fixture_path: nil, message: ""
 
   def exception(path: path, changes: changes, existing_data: existing_data, new_data: new_data) do
-    %__MODULE__{fixture_path: path, message: generate_message(path, changes, existing_data, new_data)}
+    %__MODULE__{
+      fixture_path: path,
+      message: generate_message(path, changes, existing_data, new_data)
+    }
   end
 
   defp generate_message(path, changes, existing_data, new_data) do

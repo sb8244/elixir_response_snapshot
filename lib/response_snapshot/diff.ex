@@ -31,6 +31,7 @@ defmodule ResponseSnapshot.Diff do
     case Keyword.keyword?(source) && Keyword.keyword?(target) do
       true ->
         compare_keyword_lists(source, target, changes, path)
+
       false ->
         source_to_target_changes =
           source
@@ -39,17 +40,26 @@ defmodule ResponseSnapshot.Diff do
             case Enum.at(target, index, :__missing_list_entry__) do
               :__missing_list_entry__ ->
                 Changes.addition(changes, build_path(path, index, "_"))
+
               target_value ->
-                compare(source_value, target_value, Changes.set_mode(changes, :modification), build_path(path, index, "_"))
-                  |> Changes.set_mode(nil)
+                compare(
+                  source_value,
+                  target_value,
+                  Changes.set_mode(changes, :modification),
+                  build_path(path, index, "_")
+                )
+                |> Changes.set_mode(nil)
             end
           end)
 
         case length(target) - length(source) do
-          ignorable when ignorable <= 0 -> source_to_target_changes
+          ignorable when ignorable <= 0 ->
+            source_to_target_changes
+
           removal_count ->
             start_index = length(source) - 1
-            Enum.reduce((1..removal_count), source_to_target_changes, fn removal_index, changes ->
+
+            Enum.reduce(1..removal_count, source_to_target_changes, fn removal_index, changes ->
               Changes.removal(changes, build_path(path, removal_index + start_index, "_"))
             end)
         end
@@ -71,8 +81,15 @@ defmodule ResponseSnapshot.Diff do
         case Keyword.has_key?(target, key) do
           true ->
             target_value = Keyword.get(target, key)
-            compare(source_value, target_value, Changes.set_mode(changes, :modification), build_path(path, key))
-              |> Changes.set_mode(nil)
+
+            compare(
+              source_value,
+              target_value,
+              Changes.set_mode(changes, :modification),
+              build_path(path, key)
+            )
+            |> Changes.set_mode(nil)
+
           false ->
             Changes.addition(changes, build_path(path, key))
         end
@@ -82,6 +99,7 @@ defmodule ResponseSnapshot.Diff do
       case Keyword.has_key?(source, key) do
         true ->
           changes
+
         false ->
           Changes.removal(changes, build_path(path, key))
       end
@@ -93,7 +111,8 @@ defmodule ResponseSnapshot.Diff do
   defp build_path("", key, _), do: "#{key}"
   defp build_path(path, key, separator), do: "#{path}#{separator}#{key}"
 
-  defp atomize_keyword_list(list), do: Enum.map(list, fn {key, value} -> {to_atom(key), value} end)
+  defp atomize_keyword_list(list),
+    do: Enum.map(list, fn {key, value} -> {to_atom(key), value} end)
 
   defp to_atom(a) when is_atom(a), do: a
   defp to_atom(s) when is_bitstring(s), do: String.to_atom(s)
