@@ -21,7 +21,8 @@ defmodule ResponseSnapshot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poison, "~> 2.2 or ~> 3.0"}
+      {:poison, "~> 2.2 or ~> 3.0"},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
 end
