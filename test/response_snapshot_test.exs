@@ -23,6 +23,12 @@ defmodule ResponseSnapshotTest do
       assert FileManager.read_fixture(path) == original_fixture
     end
 
+    test "a base path prefix is used from the Application env" do
+      Application.put_env(:response_snapshot, :path_base, "test/fixtures")
+      %{a: 1, b: 2} |> ResponseSnapshot.store_and_compare!(path: "integration_existing.json")
+      Application.delete_env(:response_snapshot, :path_base)
+    end
+
     test "an existing fixture which does not match raises an error" do
       path = @existing_snapshot_path
       original_fixture = FileManager.read_fixture(path)
@@ -55,12 +61,18 @@ defmodule ResponseSnapshotTest do
         The following keys were removed:#{" "}
         The following keys were modified: b
 
-        Your fixture is located at test/fixtures/integration_existing.json
+        Your fixture is located at #{Path.expand("test/fixtures/integration_existing.json", ".")}
         """
     end
 
     test "mode=keys cause a modification to not error" do
       %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, mode: :keys)
+    end
+
+    test "mode=keys can be set via Application env" do
+      Application.put_env(:response_snapshot, :mode, :keys)
+      %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path)
+      Application.delete_env(:response_snapshot, :mode)
     end
 
     test "mode=keys cause an addition to error" do
@@ -90,6 +102,12 @@ defmodule ResponseSnapshotTest do
       assert err.message =~ "were added: c\n"
       assert err.message =~ "were removed: a\n"
       assert err.message =~ "were modified: \n"
+    end
+
+    test "ignored keys are based off the Application env" do
+      Application.put_env(:response_snapshot, :ignored_keys, ["a"])
+      %{a: "changed", b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["b"])
+      Application.delete_env(:response_snapshot, :ignored_keys)
     end
 
     test "keys not ignored are still an error" do

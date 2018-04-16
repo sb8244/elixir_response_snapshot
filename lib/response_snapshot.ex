@@ -8,7 +8,7 @@ defmodule ResponseSnapshot do
 
   ## Usage
 
-  The most basic is a simple call to store_and_compare! as such:
+  The most basic is a simple call to `store_and_compare!` as such:
 
   ```
     response_json
@@ -23,6 +23,18 @@ defmodule ResponseSnapshot do
   * path - The path of the fixture on disk
   * mode - The comparison mode of the diff algorithm. Values must be: :exact, :keys
   * ignored_keys - Keys to ignore during comparison. Can be exact or wildcard matches
+
+  ## Application Config
+
+  In addition to being able to set configuration for each call, certain configuration
+  can be achieved using the Application module. The following options are available:
+
+  * path_base - The base of the path that all fixture paths will be relative to
+  * mode - Same as mode option
+  * ignored_keys - Same as ignored_keys options; the lists are combined
+
+  Option values passed into the `store_and_compare!` function are used over the
+  Application config values.
 
   ## Comparison Modes
 
@@ -51,12 +63,12 @@ defmodule ResponseSnapshot do
   goals of this library.
   """
 
-  alias ResponseSnapshot.{Changes, Diff, FileManager, SnapshotMismatchError}
+  alias ResponseSnapshot.{Changes, Config, Diff, FileManager, SnapshotMismatchError}
 
   def store_and_compare!(data, opts) do
-    path = Keyword.fetch!(opts, :path)
-    mode = Keyword.get(opts, :mode, :exact)
-    ignored_keys = Keyword.get(opts, :ignored_keys, [])
+    path = Config.get_path(opts)
+    mode = Config.get_mode(opts)
+    ignored_keys = Config.get_ignored_keys(opts)
 
     case FileManager.fixture_exists?(path) do
       true ->
