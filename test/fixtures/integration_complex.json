@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2018-04-16T02:51:47.823693Z",
+  "file": "test/response_snapshot_test.exs",
+  "data": {
+    "map": {
+      "b": [
+        1,
+        2
+      ],
+      "a": 1
+    },
+    "list": [
+      1,
+      {
+        "a": 1
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@ defmodule ResponseSnapshotTest do
   alias ResponseSnapshot.FileManager
 
   @existing_snapshot_path "test/fixtures/integration_existing.json"
+  @complex_snapshot_path "test/fixtures/integration_complex.json"
 
   describe "store_and_compare!/2" do
     test "a new path writes the data to disk" do
@@ -92,6 +93,31 @@ defmodule ResponseSnapshotTest do
         end)
 
       assert err.message =~ "were added: d"
+    end
+
+    test "ignored_keys which match the start of a path are not ignored" do
+      err =
+        assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+          %{
+            map: %{
+              a: 2,
+              b: [1, 2]
+            },
+            list: [1, %{a: 1}]
+          } |> ResponseSnapshot.store_and_compare!(path: @complex_snapshot_path, ignored_keys: ["map"])
+        end)
+
+      assert err.message =~ "were modified: map.a"
+    end
+
+    test "map wildcards can be used to ignore any key no matter how it's nested" do
+      %{
+        map: %{
+          a: 2,
+          b: [1, 2]
+        },
+        list: [1, %{a: 1}]
+      } |> ResponseSnapshot.store_and_compare!(path: @complex_snapshot_path, ignored_keys: [{"a", :any_nesting}])
     end
   end
 end

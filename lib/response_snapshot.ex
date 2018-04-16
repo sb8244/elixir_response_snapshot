@@ -50,9 +50,20 @@ defmodule ResponseSnapshot do
     modified_list =
       Map.get(changes, field)
         |> Enum.reject(fn path ->
-          Enum.member?(ignored_keys, path)
+          Enum.find(ignored_keys, fn ignored_key ->
+            ignored_key_matches_path?(ignored_key, path)
+          end)
         end)
 
     Map.put(changes, field, modified_list)
+  end
+
+  defp ignored_key_matches_path?(ignored_key, path) when is_bitstring(ignored_key) do
+    ignored_key == path
+  end
+
+  defp ignored_key_matches_path?({ignored_key, :any_nesting}, path) when is_bitstring(ignored_key) do
+    # start of string or . followed by ignored key followed by . or end of string
+    path =~ Regex.compile!("(^|\.)(#{ignored_key})(\.|$)")
   end
 end
