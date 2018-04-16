@@ -4,6 +4,34 @@ defmodule ResponseSnapshot do
   and ensures that they do not change in between test runs. The output is saved to disk,
   meant to be checked into source control, and can be used by frontend and other tests
   to ensure proper integration between frontend and backend code.
+
+  The most basic is a simple call to store_and_compare! as such:
+
+  ```
+  response_json
+    |> store_and_compare!(path: "test/location/i/want/output.json")
+  ```
+
+  This will cause the output to be written to disk the first time, and then compared
+  using exact match in all future tests.
+
+  The store_and_compare! interface has 2 different modes, exact and keys. The "exact"
+  mode is default and requires both key and value of the comparison to match the stored
+  snapshot. The "keys" mode requires only the keys of the comparison to match the stored
+  snapshot. This can be useful in testing that the shape of an endpoint doesn't change
+  over time, without worrying about the test input.
+
+  It is possible to ignore keys that will change between test runs. This is most common
+  for dynamic fields such as ids, timestamps, etc. Ignored keys can be done via an exact
+  string comparison, or a wildcard-like implementation.
+
+  ```
+  response_json
+    |> store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
+  ```
+
+  The exact.example key requires that the shape of the JSON is exact -> key. The partial key
+  allows for matches such as "partial", "partial.nested", or "nested.partial".
   """
 
   alias ResponseSnapshot.{Changes, Diff, FileManager, SnapshotMismatchError}
