@@ -3,6 +3,8 @@ defmodule ResponseSnapshotTest do
 
   alias ResponseSnapshot.FileManager
 
+  @existing_snapshot_path "test/fixtures/integration_existing.json"
+
   describe "store_and_compare!/2" do
     test "a new path writes the data to disk" do
       path = "test/fixtures/integration_new.json"
@@ -13,7 +15,7 @@ defmodule ResponseSnapshotTest do
     end
 
     test "an existing fixture which matches does not alter the file on disk nor raise" do
-      path = "test/fixtures/integration_existing.json"
+      path = @existing_snapshot_path
       original_fixture = FileManager.read_fixture(path)
       %{a: 1, b: 2} |> ResponseSnapshot.store_and_compare!(path: path)
 
@@ -21,7 +23,7 @@ defmodule ResponseSnapshotTest do
     end
 
     test "an existing fixture which does not match raises an error" do
-      path = "test/fixtures/integration_existing.json"
+      path = @existing_snapshot_path
       original_fixture = FileManager.read_fixture(path)
 
       err =
@@ -54,6 +56,28 @@ defmodule ResponseSnapshotTest do
 
         Your fixture is located at test/fixtures/integration_existing.json
         """
+    end
+
+    test "mode=keys cause a modification to not error" do
+      %{a: 1, b: "changed"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, mode: :keys)
+    end
+
+    test "mode=keys cause an addition to error" do
+      err =
+        assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+          %{a: 1, b: 2, c: 3} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path)
+        end)
+
+      assert err.message =~ "The following keys were added: c"
+    end
+
+    test "mode=keys cause a removal to error" do
+      err =
+        assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+          %{a: 1} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path)
+        end)
+
+      assert err.message =~ "The following keys were removed: b"
     end
   end
 end

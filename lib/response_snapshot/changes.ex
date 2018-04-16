@@ -34,6 +34,10 @@ defmodule ResponseSnapshot.Changes do
     Map.put(changes, :modifications, new)
   end
 
+  def clear(changes, :modifications) do
+    Map.put(changes, :modifications, [])
+  end
+
   def set_mode(changes, mode) when mode in [:addition, :removal, :modification, nil] do
     Map.put(changes, :mode, mode)
   end

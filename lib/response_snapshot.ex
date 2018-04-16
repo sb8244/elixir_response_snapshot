@@ -8,21 +8,32 @@ defmodule ResponseSnapshot do
 
   alias ResponseSnapshot.{Changes, Diff, FileManager, SnapshotMismatchError}
 
-  def store_and_compare!(data, path: path) do
+  def store_and_compare!(data, opts) do
+    path = Keyword.fetch!(opts, :path)
+    mode = Keyword.get(opts, :mode, :exact)
+
     case FileManager.fixture_exists?(path) do
       true ->
-        compare_existing_fixture(data, path: path)
+        compare_existing_fixture(data, path: path, mode: mode)
       false ->
         FileManager.write_fixture(path, data: data)
     end
   end
 
-  defp compare_existing_fixture(data, path: path) do
+  defp compare_existing_fixture(data, path: path, mode: mode) do
     %{"data" => existing_data} = FileManager.read_fixture(path)
-    changes = Diff.compare(data, existing_data)
+
+    changes =
+      Diff.compare(data, existing_data)
+        |> adjust_changes_for_mode(mode: mode)
+
     case changes == Changes.empty() do
       true -> :ok
       false -> raise SnapshotMismatchError, path: path, changes: changes, existing_data: existing_data, new_data: data
     end
   end
+
+  defp adjust_changes_for_mode(changes, mode: :exact), do: changes
+
+  defp adjust_changes_for_mode(changes, mode: :keys), do: changes |> Changes.clear(:modifications)
 end
