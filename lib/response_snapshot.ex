@@ -7,13 +7,19 @@ defmodule ResponseSnapshot do
 
   The most basic is a simple call to store_and_compare! as such:
 
-  ```
-  response_json
-    |> store_and_compare!(path: "test/location/i/want/output.json")
-  ```
+    response_json
+      |> store_and_compare!(path: "test/location/i/want/output.json")
 
   This will cause the output to be written to disk the first time, and then compared
   using exact match in all future tests.
+
+  ## Options
+
+  * path - The path of the fixture on disk
+  * mode - The comparison mode of the diff algorithm. Values must be: :exact, :keys
+  * ignored_keys - Keys to ignore during comparison. Can be exact or wildcard matches
+
+  ## Comparison Modes
 
   The store_and_compare! interface has 2 different modes, exact and keys. The "exact"
   mode is default and requires both key and value of the comparison to match the stored
@@ -21,14 +27,14 @@ defmodule ResponseSnapshot do
   snapshot. This can be useful in testing that the shape of an endpoint doesn't change
   over time, without worrying about the test input.
 
+  ## Ignored Keys
+
   It is possible to ignore keys that will change between test runs. This is most common
   for dynamic fields such as ids, timestamps, etc. Ignored keys can be done via an exact
   string comparison, or a wildcard-like implementation.
 
-  ```
-  response_json
-    |> store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
-  ```
+    response_json
+      |> store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
 
   The exact.example key requires that the shape of the JSON is exact -> key. The partial key
   allows for matches such as "partial", "partial.nested", or "nested.partial".
