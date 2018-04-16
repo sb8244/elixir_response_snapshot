@@ -73,10 +73,11 @@ defmodule ResponseSnapshot do
     case FileManager.fixture_exists?(path) do
       true ->
         compare_existing_fixture(data, path: path, mode: mode, ignored_keys: ignored_keys)
-
       false ->
         FileManager.write_fixture(path, data: data)
     end
+
+    data
   end
 
   defp compare_existing_fixture(data, path: path, mode: mode, ignored_keys: ignored_keys) do
