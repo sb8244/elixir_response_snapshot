@@ -11,12 +11,13 @@ This is in development. A version 1.0 will mark the public release.
 
 ## TODO
 
-- [ ] Setup desired testing interface
-- [ ] Compare JSON responses deeply
-  - [ ] value change doesn't fail mode (new / missing keys will fail)
-  - [ ] exact value mode (new / missing keys, changed values will fail)
+- [x] Setup desired testing interface
+- [ ] Setup application option defaults
+- [x] Compare JSON responses deeply
+  - [x] value change doesn't fail mode (new / missing keys will fail)
+  - [x] exact value mode (new / missing keys, changed values will fail)
 - [ ] Compare HTML responses at face value
-- [ ] Fail tests with helpful message on failure
+- [x] Fail tests with helpful message on failure
 - [ ] Allow re-recording of a snapshot with a switch passed to the test suite
 
 ## Installation
