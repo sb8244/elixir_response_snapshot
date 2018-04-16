@@ -1,8 +1,8 @@
 {
-  "recorded_at": "2018-04-15T18:07:18.637490Z",
+  "recorded_at": "2018-04-16T17:59:40.651805Z",
   "file": "test/response_snapshot_test.exs",
   "data": {
-    "b": 2,
-    "a": 1
+    "a": 1,
+    "b": 2
   }
 }

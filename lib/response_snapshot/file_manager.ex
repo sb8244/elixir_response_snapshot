@@ -7,7 +7,7 @@ defmodule ResponseSnapshot.FileManager do
   """
   def write_fixture(path, data: data) do
     create_folder_structure!(path)
-    File.write!(path, writeable_data(data))
+    File.write!(path, writeable_data(data) <> "\n")
   end
 
   @doc """
