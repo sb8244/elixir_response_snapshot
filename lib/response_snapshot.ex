@@ -45,6 +45,10 @@ defmodule ResponseSnapshot do
 
   The exact.example key requires that the shape of the JSON is exact -> key. The partial key
   allows for matches such as "partial", "partial.nested", or "nested.partial".
+
+  Ignored keys will only ignore value changes, not key additions or removals. This is
+  due to an addition or removal affecting the output shape, which would go against the
+  goals of this library.
   """
 
   alias ResponseSnapshot.{Changes, Diff, FileManager, SnapshotMismatchError}
@@ -82,8 +86,6 @@ defmodule ResponseSnapshot do
 
   defp adjust_changes_for_ignored_keys(changes, ignored_keys) when is_list(ignored_keys) do
     changes
-      |> remove_ignored_keys_from_changes(:additions, ignored_keys)
-      |> remove_ignored_keys_from_changes(:removals, ignored_keys)
       |> remove_ignored_keys_from_changes(:modifications, ignored_keys)
   end
 

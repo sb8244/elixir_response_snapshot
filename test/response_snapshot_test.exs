@@ -81,8 +81,15 @@ defmodule ResponseSnapshotTest do
       assert err.message =~ "were removed: b"
     end
 
-    test "ignored_keys cause any addition, removal, modification to not be counted" do
-      %{b: "changed", c: "added"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["a", "b", "c"])
+    test "ignored_keys cause any modification to not be counted, but additions and removals still are" do
+      err =
+        assert_raise(ResponseSnapshot.SnapshotMismatchError, fn ->
+          %{b: "changed", c: "added"} |> ResponseSnapshot.store_and_compare!(path: @existing_snapshot_path, ignored_keys: ["a", "b", "c"])
+        end)
+
+      assert err.message =~ "were added: c\n"
+      assert err.message =~ "were removed: a\n"
+      assert err.message =~ "were modified: \n"
     end
 
     test "keys not ignored are still an error" do
