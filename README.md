@@ -12,7 +12,7 @@ responses do not change over time.
 
 ## Usage
 
-The most basic is a simple call to store_and_compare! as such:
+The most basic is a simple call to `store_and_compare!` as such:
 
 ```
   response_json
@@ -27,6 +27,18 @@ using exact match in all future tests.
 * path - The path of the fixture on disk
 * mode - The comparison mode of the diff algorithm. Values must be: :exact, :keys
 * ignored_keys - Keys to ignore during comparison. Can be exact or wildcard matches
+
+## Application Config
+
+In addition to being able to set configuration for each call, certain configuration
+can be achieved using the Application module. The following options are available:
+
+* path_base - The base of the path that all fixture paths will be relative to
+* mode - Same as mode option
+* ignored_keys - Same as ignored_keys options; the lists are combined
+
+Option values passed into the `store_and_compare!` function are used over the
+Application config values.
 
 ## Comparison Modes
 
@@ -49,6 +61,10 @@ string comparison, or a wildcard-like implementation.
 
 The exact.example key requires that the shape of the JSON is exact -> key. The partial key
 allows for matches such as "partial", "partial.nested", or "nested.partial".
+
+Ignored keys will only ignore value changes, not key additions or removals. This is
+due to an addition or removal affecting the output shape, which would go against the
+goals of this library.
 
 ## TODO
 
