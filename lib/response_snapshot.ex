@@ -11,21 +11,23 @@ defmodule ResponseSnapshot do
   def store_and_compare!(data, opts) do
     path = Keyword.fetch!(opts, :path)
     mode = Keyword.get(opts, :mode, :exact)
+    ignored_keys = Keyword.get(opts, :ignored_keys, [])
 
     case FileManager.fixture_exists?(path) do
       true ->
-        compare_existing_fixture(data, path: path, mode: mode)
+        compare_existing_fixture(data, path: path, mode: mode, ignored_keys: ignored_keys)
       false ->
         FileManager.write_fixture(path, data: data)
     end
   end
 
-  defp compare_existing_fixture(data, path: path, mode: mode) do
+  defp compare_existing_fixture(data, path: path, mode: mode, ignored_keys: ignored_keys) do
     %{"data" => existing_data} = FileManager.read_fixture(path)
 
     changes =
       Diff.compare(data, existing_data)
-        |> adjust_changes_for_mode(mode: mode)
+        |> adjust_changes_for_mode(mode)
+        |> adjust_changes_for_ignored_keys(ignored_keys)
 
     case changes == Changes.empty() do
       true -> :ok
@@ -33,7 +35,24 @@ defmodule ResponseSnapshot do
     end
   end
 
-  defp adjust_changes_for_mode(changes, mode: :exact), do: changes
+  defp adjust_changes_for_mode(changes, :exact), do: changes
 
-  defp adjust_changes_for_mode(changes, mode: :keys), do: changes |> Changes.clear(:modifications)
+  defp adjust_changes_for_mode(changes, :keys), do: changes |> Changes.clear(:modifications)
+
+  defp adjust_changes_for_ignored_keys(changes, ignored_keys) when is_list(ignored_keys) do
+    changes
+      |> remove_ignored_keys_from_changes(:additions, ignored_keys)
+      |> remove_ignored_keys_from_changes(:removals, ignored_keys)
+      |> remove_ignored_keys_from_changes(:modifications, ignored_keys)
+  end
+
+  defp remove_ignored_keys_from_changes(changes, field, ignored_keys) do
+    modified_list =
+      Map.get(changes, field)
+        |> Enum.reject(fn path ->
+          Enum.member?(ignored_keys, path)
+        end)
+
+    Map.put(changes, field, modified_list)
+  end
 end
