@@ -2,8 +2,11 @@ defmodule ResponseSnapshot do
   @moduledoc """
   ResponseSnapshot is a testing tool for Elixir that captures the output of responses
   and ensures that they do not change in between test runs. The output is saved to disk,
-  meant to be checked into source control, and can be used by frontend and other tests
-  to ensure proper integration between frontend and backend code.
+  meant to be checked into source control. This output can be used by frontend and other tests
+  to ensure proper integration between frontend and backend code, or to ensure that endpoint
+  responses do not change over time.
+
+  ## Usage
 
   The most basic is a simple call to store_and_compare! as such:
 
