@@ -1,8 +1,5 @@
 defmodule ResponseSnapshot.FileManager do
-  @moduledoc """
-  Management of snapshot files. Files are JSON pretty encoded and contain the keys
-  "recorded_at", "file", and "data".
-  """
+  @moduledoc false
 
   @doc """
   Writes a snapshot fixture to disk. The folder structure for the path will be

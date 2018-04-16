@@ -1,16 +1,15 @@
 defmodule ResponseSnapshot.Diff do
-  @moduledoc """
-  Algorithm to compare a source and target value. The value can either be a primitive,
-  map, or a list. The intent of this module is that JSON notation values are passed in.
-  However, non-JSON compatible values may work correctly with this algorithm (such as
-  keyword lists).
-  """
+  @moduledoc false
 
   alias ResponseSnapshot.Changes
 
   @doc """
-  Compare the source to a target. A Changes struct is returned with the result of
-  the comparison.
+  Algorithm to compare a source and target value. The value can either be a primitive,
+  map, or a list. The intent of this module is that JSON notation values are passed in.
+  However, non-JSON compatible values may work correctly with this algorithm (such as
+  keyword lists).
+
+  A Changes struct is returned with the result of the comparison.
   """
   def compare(source, target) do
     compare(source, target, Changes.empty(), "")
