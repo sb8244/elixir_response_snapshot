@@ -8,11 +8,11 @@ defmodule ResponseSnapshot do
 
   ## Usage
 
-  The most basic is a simple call to `store_and_compare!` as such:
+  The most basic is a simple call to `store_and_compare!/2` as such:
 
   ```
     response_json
-      |> store_and_compare!(path: "test/location/i/want/output.json")
+      |> ResponseSnapshot.store_and_compare!(path: "test/location/i/want/output.json")
   ```
 
   This will cause the output to be written to disk the first time, and then compared
@@ -33,12 +33,12 @@ defmodule ResponseSnapshot do
   * mode - Same as mode option
   * ignored_keys - Same as ignored_keys options; the lists are combined
 
-  Option values passed into the `store_and_compare!` function are used over the
+  Option values passed into the `store_and_compare!/2` function are used over the
   Application config values.
 
   ## Comparison Modes
 
-  The `store_and_compare!` interface has 2 different modes, exact and keys. The `:exact`
+  The `store_and_compare!/2` interface has 2 different modes, exact and keys. The `:exact`
   mode is default and requires both key and value of the comparison to match the stored
   snapshot. The `:keys` mode requires only the keys of the comparison to match the stored
   snapshot. This can be useful in testing that the shape of an endpoint doesn't change
@@ -52,7 +52,7 @@ defmodule ResponseSnapshot do
 
   ```
     response_json
-      |> store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
+      |> ResponseSnapshot.store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
   ```
 
   The exact.example key requires that the shape of the JSON is exact -> key. The partial key
