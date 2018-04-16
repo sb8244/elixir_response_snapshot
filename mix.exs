@@ -6,7 +6,11 @@ defmodule ResponseSnapshot.MixProject do
       app: :response_snapshot,
       version: "0.1.0",
       elixir: "~> 1.6",
-      deps: deps()
+      description: description(),
+      package: package(),
+      deps: deps(),
+      name: "Response Snapshot",
+      source_url: github_url()
     ]
   end
 
@@ -22,6 +26,30 @@ defmodule ResponseSnapshot.MixProject do
     [
       {:poison, "~> 2.2 or ~> 3.0"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+    ]
+  end
+
+  defp description() do
+    """
+    ResponseSnapshot is a testing tool for Elixir that captures the output of responses
+    and ensures that they do not change in between test runs. The output is saved to disk,
+    meant to be checked into source control. This output can be used by frontend and other tests
+    to ensure proper integration between frontend and backend code, or to ensure that endpoint
+    responses do not change over time.
+    """
+  end
+
+  defp github_url() do
+    "https://github.com/sb8244/elixir_response_snapshot"
+  end
+
+  defp package() do
+    [
+      # These are the default files included in the package
+      files: ["lib", "mix.exs", "README*", "readme*", "LICENSE*"],
+      maintainers: ["Stephen Bussey (sb8244)"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => github_url()}
     ]
   end
 end
