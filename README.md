@@ -54,14 +54,17 @@ allows for matches such as "partial", "partial.nested", or "nested.partial".
 
 - [x] Setup desired testing interface
 - [ ] Setup application option defaults
+  - [ ] base path
+  - [ ] ignored keys
+  - [ ] mode
 - [x] Compare JSON responses deeply
   - [x] value change doesn't fail mode (new / missing keys will fail)
   - [x] exact value mode (new / missing keys, changed values will fail)
 - [x] Ignored keys
   - [x] Ignore key should only ignore modifications because addition/removal is contract breakage
-- [ ] Compare HTML responses at face value
+- [-] Compare HTML responses at face value *no, focus only on JSON responses for now*
 - [x] Fail tests with helpful message on failure
-- [ ] Allow re-recording of a snapshot with a switch passed to the test suite
+- [ ] Allow re-recording of a snapshot with a switch passed to the test suite *not sure this is possible*
 
 ## Installation
 
