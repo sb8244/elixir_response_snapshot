@@ -1,7 +1,3 @@
-## Disclaimer
-
-This is in development. A version 1.0 will mark the public release.
-
 # ResponseSnapshot
 
 ResponseSnapshot is a testing tool for Elixir that captures the output of responses
@@ -9,6 +5,19 @@ and ensures that they do not change in between test runs. The output is saved to
 meant to be checked into source control. This output can be used by frontend and other tests
 to ensure proper integration between frontend and backend code, or to ensure that endpoint
 responses do not change over time.
+
+## Installation
+
+Add the following to your dependency list:
+
+```
+def deps() do
+  [
+    ...
+    {:response_snapshot, "~> 1.0", only: :test}
+  ]
+end
+```
 
 ## Usage
 
@@ -82,16 +91,3 @@ goals of this library.
 - [x] Fail tests with helpful message on failure
 - [-] Allow re-recording of a snapshot with a switch passed to the test suite *not sure this is possible*
 - [x] Dialyzer public interface
-
-## Installation
-
-Add the following to your deps:
-
-```
-def deps() do
-  [
-    ...
-    {:response_snapshot, "~> 0.1", only: :test}
-  ]
-end
-```
