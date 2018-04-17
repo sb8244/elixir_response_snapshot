@@ -81,7 +81,17 @@ goals of this library.
 - [-] Compare HTML responses at face value *no, focus only on JSON responses for now*
 - [x] Fail tests with helpful message on failure
 - [-] Allow re-recording of a snapshot with a switch passed to the test suite *not sure this is possible*
+- [ ] Dialyzer
 
 ## Installation
 
-WIP
+Add the following to your deps:
+
+```
+def deps() do
+  [
+    ...
+    {:response_snapshot, "~> 0.1", only: :test}
+  ]
+end
+```
