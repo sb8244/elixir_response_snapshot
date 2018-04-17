@@ -65,6 +65,11 @@ defmodule ResponseSnapshot do
 
   alias ResponseSnapshot.{Changes, Config, Diff, FileManager, SnapshotMismatchError}
 
+  @doc """
+  Compares the data to an existing fixture, following the mode and ignored keys.
+  If the fixture doesn't exist, it will be written and no asserts will occur.
+  """
+  @spec store_and_compare!(any(), Keyword.t()) :: any()
   def store_and_compare!(data, opts) do
     path = Config.get_path(opts)
     mode = Config.get_mode(opts)
