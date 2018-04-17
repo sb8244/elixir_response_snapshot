@@ -4,7 +4,7 @@ defmodule ResponseSnapshot.MixProject do
   def project do
     [
       app: :response_snapshot,
-      version: "0.1.3",
+      version: "1.0.0",
       elixir: "~> 1.6",
       description: description(),
       package: package(),
