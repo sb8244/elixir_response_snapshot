@@ -6,6 +6,8 @@ meant to be checked into source control. This output can be used by frontend and
 to ensure proper integration between frontend and backend code, or to ensure that endpoint
 responses do not change over time.
 
+Read more in this [introduction blog post](https://stephenbussey.com/2018/04/17/introducing-elixir-response-snapshot-testing.html).
+
 ## Installation
 
 Add the following to your dependency list:
