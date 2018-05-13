@@ -27,11 +27,17 @@ The most basic is a simple call to `store_and_compare!` as such:
 
 ```
   response_json
-    |> store_and_compare!(path: "test/location/i/want/output.json")
+    |> ResponseSnapshot.store_and_compare!(path: "test/location/i/want/output.json")
 ```
 
 This will cause the output to be written to disk the first time, and then compared
 using exact match in all future tests.
+
+The response will be stored as JSON, always, which brings along some niceities like
+serialization and deserialization. This means that your JSON responses will work out
+of the box and give you benefits like ignored keys. However, string responses are
+also valid JSON and so you can use this library to capture the output of strings.
+The string comparison is exact match only.
 
 ## Options
 
@@ -67,7 +73,7 @@ string comparison, or a wildcard-like implementation.
 
 ```
   response_json
-    |> store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
+    |> ResponseSnapshot.store_and_compare!(path: path, ignored_keys: ["exact.example", {"partial", :any_nesting}])
 ```
 
 The exact.example key requires that the shape of the JSON is exact -> key. The partial key
@@ -89,7 +95,7 @@ goals of this library.
   - [x] exact value mode (new / missing keys, changed values will fail)
 - [x] Ignored keys
   - [x] Ignore key should only ignore modifications because addition/removal is contract breakage
-- [-] Compare HTML responses at face value *no, focus only on JSON responses for now*
+- [x] Compare HTML responses at face value - free because a string is JSON compatible
 - [x] Fail tests with helpful message on failure
 - [-] Allow re-recording of a snapshot with a switch passed to the test suite *not sure this is possible*
 - [x] Dialyzer public interface
